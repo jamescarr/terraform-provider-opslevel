@@ -50,6 +50,7 @@ type ComponentTypeModel struct {
 	Id                types.String                 `tfsdk:"id"`
 	Name              types.String                 `tfsdk:"name"`
 	Alias             types.String                 `tfsdk:"alias"`
+	Category          types.String                 `tfsdk:"category"`
 	Description       types.String                 `tfsdk:"description"`
 	Icon              *ComponentTypeIconModel      `tfsdk:"icon"`
 	OwnerRelationship *OwnerRelationshipModel      `tfsdk:"owner_relationship"`
@@ -73,6 +74,7 @@ func (s ComponentTypeResource) NewModel(res *opslevel.ComponentType, stateModel 
 	stateModel.Id = types.StringValue(string(res.Id))
 	stateModel.Name = types.StringValue(res.Name)
 	stateModel.Alias = types.StringValue(res.Aliases[0])
+	stateModel.Category = types.StringValue(res.Category)
 	stateModel.Description = types.StringValue(res.Description)
 	stateModel.Icon = &ComponentTypeIconModel{
 		Color: types.StringValue(res.Icon.Color),
@@ -150,6 +152,15 @@ func (s ComponentTypeResource) Schema(ctx context.Context, req resource.SchemaRe
 			"alias": schema.StringAttribute{
 				Description: "The unique alias of the component type.",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"category": schema.StringAttribute{
+				MarkdownDescription: "The category of the component type. Use `\"default\"` for regular components or `\"infrastructure\"` for infrastructure components that appear under Catalog > Infrastructure.",
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("default"),
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -299,6 +310,7 @@ func (s ComponentTypeResource) Create(ctx context.Context, req resource.CreateRe
 	input := opslevel.ComponentTypeInput{
 		Name:              nullable(planModel.Name.ValueStringPointer()),
 		Alias:             nullable(planModel.Alias.ValueStringPointer()),
+		Category:          nullable(planModel.Category.ValueStringPointer()),
 		Description:       nullable(planModel.Description.ValueStringPointer()),
 		OwnerRelationship: ownerRelInput,
 		Properties:        properties,
@@ -444,6 +456,7 @@ func (s ComponentTypeResource) Update(ctx context.Context, req resource.UpdateRe
 	input := opslevel.ComponentTypeInput{
 		Name:              nullable(planModel.Name.ValueStringPointer()),
 		Alias:             nullable(planModel.Alias.ValueStringPointer()),
+		Category:          nullable(planModel.Category.ValueStringPointer()),
 		Description:       nullable(planModel.Description.ValueStringPointer()),
 		OwnerRelationship: ownerRelInput,
 		Properties:        properties,

@@ -87,6 +87,35 @@ resource "opslevel_component_type" "mobile" {
   }
 }
 
+resource "opslevel_component_type" "redis_cloud" {
+  name        = "Redis Cloud Database"
+  alias       = "redis_cloud_database"
+  description = "A Redis Enterprise Cloud managed database instance."
+  category    = "infrastructure"
+  icon = {
+    color = "#d63031"
+    name  = "PhDatabase"
+  }
+  properties = {
+    engine = {
+      name          = "Engine"
+      locked_status = "unlocked"
+      schema = jsonencode({
+        "enum" : ["redis", "memcached"],
+        "type" : "string"
+      })
+    }
+    endpoint = {
+      name   = "Endpoint"
+      schema = jsonencode({ "type" : "string" })
+    }
+    tls-enabled = {
+      name   = "TLS Enabled"
+      schema = jsonencode({ "type" : "boolean" })
+    }
+  }
+}
+
 resource "opslevel_component_type" "lambda" {
   name        = "Lambda"
   alias       = "lambda"
@@ -410,6 +439,7 @@ resource "opslevel_component_type" "ml-ai" {
 
 ### Optional
 
+- `category` (String) The category of the component type. Use `"default"` for regular components or `"infrastructure"` for infrastructure components that appear under Catalog > Infrastructure. Defaults to `"default"`. Changing this forces a new resource.
 - `description` (String) The description of the component type.
 - `icon` (Attributes) The icon associated with the component type (see [below for nested schema](#nestedatt--icon))
 - `owner_relationship` (Attributes) The owner relationship configuration for this component type. (see [below for nested schema](#nestedatt--owner_relationship))

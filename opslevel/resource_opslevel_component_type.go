@@ -74,7 +74,9 @@ func (s ComponentTypeResource) NewModel(res *opslevel.ComponentType, stateModel 
 	stateModel.Id = types.StringValue(string(res.Id))
 	stateModel.Name = types.StringValue(res.Name)
 	stateModel.Alias = types.StringValue(res.Aliases[0])
-	stateModel.Category = types.StringValue(res.Category)
+	// Category is not read from the API response (graphql:"-") for backward
+	// compatibility with APIs that don't expose it yet. The plan/state value
+	// is authoritative since category is RequiresReplace with a default.
 	stateModel.Description = types.StringValue(res.Description)
 	stateModel.Icon = &ComponentTypeIconModel{
 		Color: types.StringValue(res.Icon.Color),

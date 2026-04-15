@@ -123,11 +123,15 @@ func NewComponentTypeDataSourceSingle() datasource.DataSource {
 			return *data, err
 		},
 		ToModel: func(ctx context.Context, identifier string, data opslevel.ComponentType) (ComponentTypeDataSourceSingleModel, error) {
+			category := data.Category
+			if category == "" {
+				category = "default"
+			}
 			baseModel := ComponentTypeDataSourceModel{
 				Id:          types.StringValue(string(data.Id)),
 				Name:        types.StringValue(data.Name),
 				Alias:       types.StringValue(data.Aliases[0]),
-				Category:    types.StringValue(data.Category),
+				Category:    types.StringValue(category),
 				Description: types.StringValue(data.Description),
 				Icon: &ComponentTypeIconModel{
 					Color: types.StringValue(data.Icon.Color),
@@ -175,11 +179,15 @@ func NewComponentTypeDataSourceMulti() datasource.DataSource {
 			return resp.Nodes, err
 		},
 		ToModel: func(ctx context.Context, data opslevel.ComponentType) (ComponentTypeDataSourceModel, error) {
+			category := data.Category
+			if category == "" {
+				category = "default"
+			}
 			model := ComponentTypeDataSourceModel{
 				Id:          types.StringValue(string(data.Id)),
 				Name:        types.StringValue(data.Name),
 				Alias:       types.StringValue(data.Aliases[0]),
-				Category:    types.StringValue(data.Category),
+				Category:    types.StringValue(category),
 				Description: types.StringValue(data.Description),
 				Icon: &ComponentTypeIconModel{
 					Color: types.StringValue(data.Icon.Color),

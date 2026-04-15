@@ -29,6 +29,43 @@ run "resource_component_type_api" {
   }
 }
 
+run "resource_component_type_default_category" {
+  providers = {
+    opslevel = opslevel.fake
+  }
+
+  assert {
+    condition     = opslevel_component_type.api.category == "default"
+    error_message = "component type without explicit category should default to 'default'"
+  }
+}
+
+run "resource_component_type_infrastructure_category" {
+  providers = {
+    opslevel = opslevel.fake
+  }
+
+  assert {
+    condition     = opslevel_component_type.redis_cloud.category == "infrastructure"
+    error_message = "component type with category='infrastructure' should retain that value"
+  }
+
+  assert {
+    condition     = opslevel_component_type.redis_cloud.name == "Redis Cloud Database"
+    error_message = "wrong name for opslevel_component_type.redis_cloud"
+  }
+
+  assert {
+    condition     = opslevel_component_type.redis_cloud.alias == "redis_cloud_database"
+    error_message = "wrong alias for opslevel_component_type.redis_cloud"
+  }
+
+  assert {
+    condition     = opslevel_component_type.redis_cloud.description == "A Redis Enterprise Cloud managed database instance"
+    error_message = "wrong description for opslevel_component_type.redis_cloud"
+  }
+}
+
 run "resource_component_type_icon_structure" {
   providers = {
     opslevel = opslevel.fake
@@ -47,6 +84,22 @@ run "resource_component_type_icon_structure" {
   assert {
     condition     = opslevel_component_type.api.icon.name == "PhCloud"
     error_message = "wrong icon name for opslevel_component_type.api"
+  }
+}
+
+run "resource_component_type_infra_icon" {
+  providers = {
+    opslevel = opslevel.fake
+  }
+
+  assert {
+    condition     = opslevel_component_type.redis_cloud.icon.color == "#d63031"
+    error_message = "wrong icon color for opslevel_component_type.redis_cloud"
+  }
+
+  assert {
+    condition     = opslevel_component_type.redis_cloud.icon.name == "PhDatabase"
+    error_message = "wrong icon name for opslevel_component_type.redis_cloud"
   }
 }
 

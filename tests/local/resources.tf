@@ -19,6 +19,26 @@ resource "opslevel_component_type" "api" {
   }
 }
 
+resource "opslevel_component_type" "redis_cloud" {
+  name        = "Redis Cloud Database"
+  alias       = "redis_cloud_database"
+  category    = "infrastructure"
+  description = "A Redis Enterprise Cloud managed database instance"
+  icon = {
+    color = "#d63031"
+    name  = "PhDatabase"
+  }
+  properties = {
+    engine = {
+      name                    = "Engine"
+      description             = "The database engine"
+      allowed_in_config_files = false
+      display_status          = "visible"
+      schema                  = jsonencode({ type = "string", enum = ["redis", "memcached"] })
+    }
+  }
+}
+
 # Campaign resources
 
 resource "opslevel_campaign" "big" {

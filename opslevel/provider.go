@@ -153,6 +153,7 @@ func (p *OpslevelProvider) Configure(ctx context.Context, req provider.Configure
 		opslevel.SetURL(data.ApiUrl.ValueString()),
 		opslevel.SetTimeout(time.Second * time.Duration(data.ApiTimeout.ValueInt64())),
 		opslevel.SetUserAgentExtra(fmt.Sprintf("terraform-provider-%s", p.version)),
+		opslevel.SetAPIVisibility("internal"),
 	}
 	client := opslevel.NewGQLClient(opts...)
 

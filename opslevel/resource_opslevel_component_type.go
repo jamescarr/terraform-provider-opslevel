@@ -312,10 +312,12 @@ func (s ComponentTypeResource) Create(ctx context.Context, req resource.CreateRe
 	input := opslevel.ComponentTypeInput{
 		Name:              nullable(planModel.Name.ValueStringPointer()),
 		Alias:             nullable(planModel.Alias.ValueStringPointer()),
-		Category:          nullable(planModel.Category.ValueStringPointer()),
 		Description:       nullable(planModel.Description.ValueStringPointer()),
 		OwnerRelationship: ownerRelInput,
 		Properties:        properties,
+	}
+	if cat := planModel.Category.ValueString(); cat != "" && cat != "default" {
+		input.Category = nullable(planModel.Category.ValueStringPointer())
 	}
 	if !planModel.Icon.Color.IsNull() && !planModel.Icon.Name.IsNull() {
 		input.Icon = &opslevel.ComponentTypeIconInput{
@@ -458,10 +460,12 @@ func (s ComponentTypeResource) Update(ctx context.Context, req resource.UpdateRe
 	input := opslevel.ComponentTypeInput{
 		Name:              nullable(planModel.Name.ValueStringPointer()),
 		Alias:             nullable(planModel.Alias.ValueStringPointer()),
-		Category:          nullable(planModel.Category.ValueStringPointer()),
 		Description:       nullable(planModel.Description.ValueStringPointer()),
 		OwnerRelationship: ownerRelInput,
 		Properties:        properties,
+	}
+	if cat := planModel.Category.ValueString(); cat != "" && cat != "default" {
+		input.Category = nullable(planModel.Category.ValueStringPointer())
 	}
 	if !planModel.Icon.Color.IsNull() && !planModel.Icon.Name.IsNull() {
 		input.Icon = &opslevel.ComponentTypeIconInput{

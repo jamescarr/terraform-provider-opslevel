@@ -316,9 +316,8 @@ func (s ComponentTypeResource) Create(ctx context.Context, req resource.CreateRe
 		OwnerRelationship: ownerRelInput,
 		Properties:        properties,
 	}
-	if cat := planModel.Category.ValueString(); cat != "" && cat != "default" {
-		input.Category = nullable(planModel.Category.ValueStringPointer())
-	}
+	// Category is not yet supported on ComponentTypeInput by the OpsLevel API.
+	// The field is kept in the schema for forward compatibility but never sent.
 	if !planModel.Icon.Color.IsNull() && !planModel.Icon.Name.IsNull() {
 		input.Icon = &opslevel.ComponentTypeIconInput{
 			Color: planModel.Icon.Color.ValueString(),
@@ -463,9 +462,6 @@ func (s ComponentTypeResource) Update(ctx context.Context, req resource.UpdateRe
 		Description:       nullable(planModel.Description.ValueStringPointer()),
 		OwnerRelationship: ownerRelInput,
 		Properties:        properties,
-	}
-	if cat := planModel.Category.ValueString(); cat != "" && cat != "default" {
-		input.Category = nullable(planModel.Category.ValueStringPointer())
 	}
 	if !planModel.Icon.Color.IsNull() && !planModel.Icon.Name.IsNull() {
 		input.Icon = &opslevel.ComponentTypeIconInput{

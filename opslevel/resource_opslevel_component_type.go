@@ -164,7 +164,7 @@ func (s ComponentTypeResource) Schema(ctx context.Context, req resource.SchemaRe
 				Computed:            true,
 				Default:             stringdefault.StaticString("default"),
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"description": schema.StringAttribute{

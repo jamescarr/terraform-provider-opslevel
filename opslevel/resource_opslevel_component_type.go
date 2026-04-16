@@ -50,6 +50,7 @@ type ComponentTypeModel struct {
 	Id                types.String                 `tfsdk:"id"`
 	Name              types.String                 `tfsdk:"name"`
 	Alias             types.String                 `tfsdk:"alias"`
+	Category          types.String                 `tfsdk:"category"`
 	Description       types.String                 `tfsdk:"description"`
 	Icon              *ComponentTypeIconModel      `tfsdk:"icon"`
 	OwnerRelationship *OwnerRelationshipModel      `tfsdk:"owner_relationship"`
@@ -152,6 +153,15 @@ func (s ComponentTypeResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"category": schema.StringAttribute{
+				MarkdownDescription: "The category of the component type. The category of the component type, e.g. default or infrastructure.",
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("default"),
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"description": schema.StringAttribute{
@@ -303,6 +313,9 @@ func (s ComponentTypeResource) Create(ctx context.Context, req resource.CreateRe
 		OwnerRelationship: ownerRelInput,
 		Properties:        properties,
 	}
+	if cat := planModel.Category.ValueString(); cat != "" && cat != "default" {
+		input.Category = nullable(planModel.Category.ValueStringPointer())
+	}
 	if !planModel.Icon.Color.IsNull() && !planModel.Icon.Name.IsNull() {
 		input.Icon = &opslevel.ComponentTypeIconInput{
 			Color: planModel.Icon.Color.ValueString(),
@@ -447,6 +460,9 @@ func (s ComponentTypeResource) Update(ctx context.Context, req resource.UpdateRe
 		Description:       nullable(planModel.Description.ValueStringPointer()),
 		OwnerRelationship: ownerRelInput,
 		Properties:        properties,
+	}
+	if cat := planModel.Category.ValueString(); cat != "" && cat != "default" {
+		input.Category = nullable(planModel.Category.ValueStringPointer())
 	}
 	if !planModel.Icon.Color.IsNull() && !planModel.Icon.Name.IsNull() {
 		input.Icon = &opslevel.ComponentTypeIconInput{
